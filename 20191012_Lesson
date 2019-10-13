@@ -1,0 +1,106 @@
+---
+title: "Analytics Study Group: 10/12/2019"
+output: html_notebook
+---
+
+#### Goals
+
+The group's main intent is to develop anlaytical skills within R and Rstudio environment in preparation to start a consultation service.
+
+##### Data Skill Core Goals
+
+* Basic Scripting
+* Basic Data Mining
+* Basic Statisical Analysis
+* Basic Data Visualization
+* Basic Application Development
+
+##### Consultation Service Goals
+
+* Build Analytical Portfolio
+* Develop Potential Cliente List
+* Soft Launch - June 2020
+
+
+#### Expectations:
+
+1. Monthly Meeting - 2nd Saturdays.
+    + Corresponds with monthly R MeetUp Group
+2. Meetings last for two to two and half hours.
+3. Meetings to be held at JOCO Public Library (Lenexa Branch)
+    + 8778 Penrose Ln, Lenexa, KS 66219
+4. All must bring their own laptops.
+    + Borrow laptop from library if needed.
+5. Assignments Completed before each meeting.
+6. Rotating presenters.
+
+
+#### Meeting Notes
+
+##### Lesson 1: Secret Santa List
+
+What is a secret santa list?
+
+Blind list of individuals for gift exchange. Blind list in this instance are individuals are matched to one another for gift exchange. This is a non-bidirectional list. Matchers (Gift Bearers) are aware of their matchees (Gift Receipent), but matchees are unaware of their matchers.
+
+Basic secret santa list rules:
+
+1. Individuals cannot match to themselves.
+
+
+Creating a secret santa list:
+
+1. Create list of individuals
+
+* David
+* Heather
+* Thanh
+* Peng
+* Steve
+* Eric
+
+```{r}
+c("David", "Heather", "Thanh", "Peng", "Steve", "Eric")
+```
+
+2. Create a list:
+
+```{r}
+p = c("David", "Heather", "Thanh", "Peng", "Steve", "Eric")
+```
+
+
+3. Create a matching list:
+```{r}
+v = c("Heather", "Thanh", "Peng", "Steve", "Eric","David")
+```
+
+4. Create matrix to house list:
+
+```{r}
+mp = matrix(p)
+mv = matrix(v)
+```
+
+5. Combine matrix to create combined list:
+```{r}
+cbind(mp,mv)
+```
+
+##### Homework
+
+Additional parameters:
+
+1. Matching list (gift receipent list) cannot be manually created.
+2. Expand list to 14 individuals.
+3. No one should buy for their own significant other.
+    + 5 couples
+4. Build in avoidance possibility.
+    + 3 sets avoidance
+5. Fixed individual (someone who already bought their gifts for an individual)
+    + 1 fixed set
+
+
+##### Next meeting
+
+November 9th @ 10:30am
