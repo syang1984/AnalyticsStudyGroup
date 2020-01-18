@@ -1,0 +1,177 @@
+---
+title: 'Analytics Study Group: 12/14/2019'
+output:
+  html_document:
+    df_print: paged
+---
+
+#### Goals
+
+The group's main intent is to develop analytical skills within R and Rstudio environment in preparation to start a consultation service.
+
+##### Data Skill Core Goals
+
+* Basic Scripting
+* Basic Data Mining
+* Basic Statistical Analysis
+* Basic Data Visualization
+* Basic Application Development
+
+##### Consultation Service Goals
+
+* Build Analytical Portfolio
+* Develop Potential Clients List
+* Soft Launch - June 2020
+
+
+#### Expectations:
+
+1. Monthly Meeting - 2nd Saturdays.
+    + Corresponds with monthly R MeetUp Group
+2. Meetings last for two to two and half hours.
+3. Meetings to be held at JOCO Public Library (Lenexa Branch)
+    + 8778 Penrose Ln, Lenexa, KS 66219
+4. All must bring their own laptops.
+    + Borrow laptop from library if needed.
+5. Assignments Completed before each meeting.
+6. Rotating presenters.
+
+
+#### Meeting Notes
+
+##### Lesson 2: Secret Santa List Cont.
+
+Additional parameters:
+
+1. Matching list (gift recipient list) cannot be manually created.
+2. Expand list to 14 individuals.
+3. No one should buy for their own significant other.
+    + 5 couples
+4. Build in avoidance possibility.
+    + 3 sets avoidance
+5. Fixed individual (someone who already bought their gifts for an individual)
+    + 1 fixed set
+    
+    
+##### Couples
+
+Carla | Chris
+
+Louis | Jessica
+
+Leslie | Ben
+
+Mitch | Cameron
+
+Jim | Pam
+
+##### Single
+
+Dwight
+
+Jeremy
+
+Ray
+
+Andy
+
+##### Frenemies (Will not buy gifts for each other)
+
+Dwight | Jim
+
+Leslie | Jeremy
+
+Louis | Ray
+
+##### Fixed Set (must match with one another)
+
+Chris | Carla
+
+##### Strategic Approach
+
+1. Create a dataframe to house all the individuals.
+2. Create set parameters
+    + Participants
+    + Self
+    + Couples
+    + Set Gifts
+    + Frenemies
+3. Create variables for testing parameters.
+4. Randomize list for givers to match receivers.
+5. Loop list until all parameters are met.
+6. Create final list.
+
+##### Final List
+
+```{r, echo=F, warning=F, error=F, message=F}
+
+library(tidyverse)
+
+na.zero <- function (x) {
+    x[is.na(x)] <- 0
+    return(x)
+}
+
+DF = tibble(Names = c('Carla', 'Chris', 'Louis', 'Jessica', 'Leslie', 'Ben', 'Mitch', 'Cameron', 'Jim', 'Pam', 'Dwight', 'Jeremy', 'Ray', 'Andy'))
+CP = tibble(C1 = c('Carla', 'Louis', 'Leslie','Mitch', 'Jim'), C2 = c('Chris','Jessica','Ben','Cameron','Pam'))
+FE = tibble(F1 = c('Dwight','Leslie','Louis'), F2 = c('Jim','Jeremy','Ray'))
+PM = tibble( PM1 = ('Chris'), PM2 = ('Carla'))
+Final_DF = left_join(DF,CP, by = c("Names" = "C1")) %>%
+    left_join(FE, by = c("Names" = "F1")) %>% 
+    left_join(PM, by = c("Names" = "PM1"))
+
+Secret_Santa = Final_DF %>% 
+    filter(!is.na(PM2)) %>% 
+    select(-c(2,3)) %>% 
+    rename(Giver = Names, Receiver = PM2)
+    
+SS_Receivers = Final_DF %>% 
+    select(Names) %>% 
+    filter(Names != ('Carla')) %>% 
+    rename(Receiver = Names)
+SS_Givers = Final_DF %>% 
+    select(Names) %>% 
+    filter(Names != ('Chris')) %>% 
+    mutate(GR = .$Names) %>% 
+    left_join(CP, by = c("Names" = "C1")) %>% 
+    left_join(CP, by = c("Names" = "C2")) %>% 
+    left_join(FE, by = c("Names" = "F1")) %>% 
+    left_join(FE, by = c("Names" = "F2")) %>% 
+    rename(Giver = Names)
+
+repeat {
+
+SS_Givers=sample_n(SS_Givers, size = nrow(SS_Givers))
+
+Pre_SS = bind_cols(SS_Receivers, SS_Givers) %>% 
+    mutate(Test1 = ifelse(Receiver == C2, 1, 0)) %>% 
+    mutate(Test2 = ifelse(Receiver == C1, 1, 0)) %>% 
+    mutate(Test3 = ifelse(Receiver == F1, 1, 0)) %>% 
+    mutate(Test4 = ifelse(Receiver == F2, 1, 0)) %>%
+    mutate(Test5 = ifelse(Receiver == GR, 1, 0)) %>% 
+    na.zero() %>% 
+    mutate(Final_Test = (if_else(Test1 == 1 | Test2 == 1 | Test3 == 1 | Test4 == 1 | Test5 == 1, 1, 0)))
+
+    #sum(Pre_SS$Final_Test)
+
+ if (sum(Pre_SS$Final_Test) == 0) {Final = Pre_SS; break}
+}
+
+Secret_Santa = bind_rows(Secret_Santa,select(Final,2:1))
+
+Secret_Santa
+
+
+```
+
+##### Homework
+
+1. Rewrite code in Tidyverse
+    + David to write randomizer code
+2. Add randomizer cost of gift (up $100) and date (first 5 days of december)
+3. Plot the days of gifts purchases and cost.
+    + Present data in three different visual formats
+    
+##### Next Meeting
+
+Jan 18 @ TBD
